@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Question Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>PDF Question AI</h1>
+            <p>Upload your PDF to generate questions instantly.</p>
+        </header>
+
+        <main>
+            <form id="uploadForm" class="upload-form">
+                <div class="form-group">
+                    <label for="pdfFile">Upload PDF</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="questionType">Question Type</label>
+                    <select id="questionType" name="questionType" required>
+                        <option value="MCQ">Multiple Choice (MCQ)</option>
+                        <option value="CQ">Creative Question (CQ)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="questionCount">Number of Questions</label>
+                    <input type="number" id="questionCount" name="questionCount" min="1" max="50" value="5" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Generate Questions</button>
+            </form>
+
+            <div id="resultSection" class="result-section hidden">
+                <div class="result-summary">
+                    <h3>Extraction Result</h3>
+                    <p><strong>Type:</strong> <span id="resType"></span></p>
+                    <p><strong>Count:</strong> <span id="resCount"></span></p>
+                    <p><strong>Pages:</strong> <span id="resPages"></span></p>
+                </div>
+                <div class="extracted-content">
+                    <div id="questionsContainer"></div>
+                </div>
+                <button id="resetBtn" class="btn-secondary">Upload Another</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const resultSection = document.getElementById('resultSection');
+        const resetBtn = document.getElementById('resetBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Generating Questions...';
+
+            try {
+                const response = await fetch('http://localhost:3000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMessage = `Server Error (${response.status})`;
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        errorMessage = errorJson.message || errorMessage;
+                    } catch (e) {
+                        errorMessage += `: ${errorText}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('resType').textContent = data.questionType;
+                    document.getElementById('resCount').textContent = data.questionCount;
+                    document.getElementById('resPages').textContent = data.pageCount;
+
+                    const questionsContainer = document.getElementById('questionsContainer');
+                    questionsContainer.innerHTML = '';
+
+                    data.questions.forEach((q, index) => {
+                        const qDiv = document.createElement('div');
+                        qDiv.className = 'question-card';
+
+                        let content = `<h4>${index + 1}. ${q.question}</h4>`;
+
+                        if (data.questionType === 'MCQ' && q.options) {
+                            content += '<ul class="options-list">';
+                            q.options.forEach(opt => {
+                                content += `<li>${opt}</li>`;
+                            });
+                            content += '</ul>';
+                            content += `<p class="answer"><strong>Answer:</strong> ${q.answer}</p>`;
+                        } else if (data.questionType === 'CQ') {
+                            content += `<p class="answer"><strong>Answer Key:</strong> ${q.answer}</p>`;
+                        }
+
+                        qDiv.innerHTML = content;
+                        questionsContainer.appendChild(qDiv);
+                    });
+
+                    form.classList.add('hidden');
+                    resultSection.classList.remove('hidden');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Generate Questions';
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            form.reset();
+            resultSection.classList.add('hidden');
+            form.classList.remove('hidden');
+        });
+    </script>
+</body>
+
+</html>

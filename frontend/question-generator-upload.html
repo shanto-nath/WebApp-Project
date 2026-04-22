@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Question Generator - Mentor Bootstrap Template</title>
+  <meta name="description" content="Upload your study material to generate practice questions.">
+  <meta name="keywords" content="upload, study, questions, AI, generator">
+
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+    /* Custom Styles for Question Generator interacting with Template */
+    .generator-card {
+      background: var(--surface-color);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--heading-color);
+    }
+
+    input[type="file"],
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      border-radius: var(--border-radius); /* Use template variable */
+      font-size: 1rem;
+      box-sizing: border-box;
+      color: var(--default-color);
+    }
+
+    input[type="file"]:focus,
+    select:focus,
+    input[type="number"]:focus {
+        border-color: var(--accent-color);
+        outline: none;
+    }
+
+    /* Buttons matched to template theme */
+    .btn-generate {
+      background: var(--accent-color);
+      color: #fff;
+      border: 0;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-size: 16px;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .btn-generate:hover {
+      background: color-mix(in srgb, var(--accent-color), transparent 15%);
+      color: #fff;
+    }
+
+    .btn-generate:disabled {
+      background: #a5b4fc;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary-custom {
+      background-color: #f3f4f6;
+      color: var(--heading-color);
+      width: 100%;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .btn-secondary-custom:hover {
+      background-color: #e5e7eb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Question Styles */
+    .question-card {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 25px 0;
+    }
+
+    .question-card:last-child {
+      border-bottom: none;
+    }
+
+    .question-card h4 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--heading-color);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .options-list {
+      list-style-type: none;
+      padding: 0;
+      margin-bottom: 15px;
+    }
+
+    .options-list li {
+      background: #f9fafb;
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid #f3f4f6;
+      transition: all 0.2s;
+    }
+
+    .options-list li:hover {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+    }
+
+    .answer {
+      background-color: #ecfdf5;
+      color: #065f46;
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      margin-top: 15px;
+      border-left: 4px solid #10b981;
+    }
+  </style>
+</head>
+
+<body class="starter-page-page">
+
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">Mentor</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="courses.html">Courses</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="question-generator-upload.html">Get Started</a>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <div class="page-title" data-aos="fade">
+      <div class="heading">
+        <div class="container">
+          <div class="row d-flex justify-content-center text-center">
+            <div class="col-lg-8">
+              <h1>Question Generator</h1>
+              <p class="mb-0">Upload your course PDFs and let AI generate practice questions instantly. Prepare smarter, not harder.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav class="breadcrumbs">
+        <div class="container">
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li class="current">Question Generator</li>
+          </ol>
+        </div>
+      </nav>
+    </div><section id="generator-section" class="section">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            
+            <div id="uploadCard" class="generator-card">
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label for="pdfFile">Upload PDF Material</label>
+                        <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required class="form-control">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="questionType">Question Type</label>
+                            <select id="questionType" name="questionType" required class="form-select">
+                                <option value="MCQ">Multiple Choice (MCQ)</option>
+                                <option value="CQ">Creative Question (CQ)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="questionCount">Number of Questions</label>
+                            <input type="number" id="questionCount" name="questionCount" min="1" max="50" value="5" required class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn-generate">Generate Questions</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="resultSection" class="hidden">
+                <div class="generator-card mb-4">
+                    <h3>Extraction Summary</h3>
+                    <div class="row mt-3">
+                        <div class="col-4">
+                            <strong>Type:</strong> <span id="resType" class="text-muted"></span>
+                        </div>
+                        <div class="col-4">
+                            <strong>Count:</strong> <span id="resCount" class="text-muted"></span>
+                        </div>
+                        <div class="col-4">
+                            <strong>Pages Processed:</strong> <span id="resPages" class="text-muted"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="generator-card">
+                    <div id="questionsContainer">
+                        </div>
+                    
+                    <div class="text-center mt-4">
+                        <button id="resetBtn" class="btn-secondary-custom">Upload Another PDF</button>
+                    </div>
+                </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="footer" class="footer position-relative light-background">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">Mentor</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p>A108 Adam Street</p>
+            <p>New York, NY 535022</p>
+            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+            <p><strong>Email:</strong> <span>info@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Terms of service</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="#">Web Design</a></li>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">Product Management</a></li>
+            <li><a href="#">Marketing</a></li>
+            <li><a href="#">Graphic Design</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4 col-md-12 footer-newsletter">
+          <h4>Our Newsletter</h4>
+          <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
+          <form action="forms/newsletter.php" method="post" class="php-email-form">
+            <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Subscribe"></div>
+            <div class="loading">Loading</div>
+            <div class="error-message"></div>
+            <div class="sent-message">Your subscription request has been sent. Thank you!</div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">Mentor</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href="https://themewagon.com">ThemeWagon</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const uploadCard = document.getElementById('uploadCard'); // The wrapper for the form
+    const resultSection = document.getElementById('resultSection');
+    const resetBtn = document.getElementById('resetBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Generating Questions...';
+
+      try {
+        const response = await fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          let errorMessage = `Server Error (${response.status})`;
+          try {
+            const errorJson = JSON.parse(errorText);
+            errorMessage = errorJson.message || errorMessage;
+          } catch (e) {
+            errorMessage += `: ${errorText}`;
+          }
+          throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById('resType').textContent = data.questionType;
+          document.getElementById('resCount').textContent = data.questionCount;
+          document.getElementById('resPages').textContent = data.pageCount;
+
+          const questionsContainer = document.getElementById('questionsContainer');
+          questionsContainer.innerHTML = '';
+
+          data.questions.forEach((q, index) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-card';
+
+            let content = `<h4>${index + 1}. ${q.question}</h4>`;
+
+            if (data.questionType === 'MCQ' && q.options) {
+              content += '<ul class="options-list">';
+              q.options.forEach(opt => {
+                content += `<li>${opt}</li>`;
+              });
+              content += '</ul>';
+              content += `<div class="answer"><strong>Correct Answer:</strong> ${q.answer}</div>`;
+            } else if (data.questionType === 'CQ') {
+              content += `<div class="answer"><strong>Model Answer / Key Points:</strong><br> ${q.answer}</div>`;
+            }
+
+            qDiv.innerHTML = content;
+            questionsContainer.appendChild(qDiv);
+          });
+
+          // Hide form card, show results
+          uploadCard.classList.add('hidden');
+          resultSection.classList.remove('hidden');
+          
+          // Smooth scroll to top of results
+          window.scrollTo({ top: document.querySelector('.page-title').offsetHeight, behavior: 'smooth' });
+
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Generate Questions';
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      resultSection.classList.add('hidden');
+      uploadCard.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+</html>
