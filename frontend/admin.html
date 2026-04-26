@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div
+      id="educore-app-wrapper"
+      style="display: flex; width: 100%; min-height: 100vh"
+    >
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-mark"><span>E</span></div>
+          <div class="brand-text">
+            <span class="brand-name">Mentor</span>
+            <span class="brand-tag">Admin</span>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <span class="nav-section-label">Overview</span>
+          <a
+            class="nav-link active"
+            data-page="dashboard"
+            onclick="navigate('dashboard')"
+          >
+            <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+          </a>
+          <span class="nav-section-label">Manage</span>
+          <a class="nav-link" data-page="courses" onclick="navigate('courses')">
+            <i class="bi bi-journal-richtext"></i><span>Courses</span>
+            <span class="nav-badge" id="badge-courses">0</span>
+          </a>
+          <a
+            class="nav-link"
+            data-page="trainers"
+            onclick="navigate('trainers')"
+          >
+            <i class="bi bi-person-workspace"></i><span>Trainers</span>
+            <span class="nav-badge" id="badge-trainers">0</span>
+          </a>
+          <a
+            class="nav-link"
+            data-page="students"
+            onclick="navigate('students')"
+          >
+            <i class="bi bi-people"></i><span>Students</span>
+            <span class="nav-badge" id="badge-students">0</span>
+          </a>
+          <span class="nav-section-label">AI Tools</span>
+          <a class="nav-link" onclick="openAIAssistant()">
+            <i class="bi bi-stars"></i><span>AI Assistant</span>
+            <span class="nav-pill">Beta</span>
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="admin-chip">
+            <div class="admin-initials">AL</div>
+            <div>
+              <div class="admin-nm">Alyssa Admin</div>
+              <div class="admin-rl">Super Admin</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content" style="flex-grow: 1">
+        <section class="page active" id="page-dashboard">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Dashboard</h1>
+              <p class="page-sub">
+                Welcome back, Alyssa. Here's your platform overview.
+              </p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-ai" onclick="getDashboardBriefing()">
+                <i class="bi bi-stars"></i> AI Briefing
+              </button>
+            </div>
+          </div>
+
+          <div class="ai-banner">
+            <div class="ai-banner-icon"><i class="bi bi-stars"></i></div>
+            <div class="ai-banner-body">
+              <div class="ai-banner-label">AI Insight</div>
+              <div id="dashAiText">
+                Click <strong>AI Briefing</strong> to get a real-time AI-powered
+                summary of your platform performance and recommendations.
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card" style="--accent: #22c55e">
+              <div class="stat-icon-wrap" style="--accent: #22c55e">
+                <i class="bi bi-journal-richtext"></i>
+              </div>
+              <div>
+                <div class="stat-val" id="dash-courses">0</div>
+                <div class="stat-lbl">Total Courses</div>
+                <div class="stat-delta positive">
+                  <i class="bi bi-arrow-up-short"></i>+3 this month
+                </div>
+              </div>
+            </div>
+            <div class="stat-card" style="--accent: #6366f1">
+              <div class="stat-icon-wrap" style="--accent: #6366f1">
+                <i class="bi bi-person-workspace"></i>
+              </div>
+              <div>
+                <div class="stat-val" id="dash-trainers">0</div>
+                <div class="stat-lbl">Trainers</div>
+                <div class="stat-delta positive">
+                  <i class="bi bi-arrow-up-short"></i>+1 this week
+                </div>
+              </div>
+            </div>
+            <div class="stat-card" style="--accent: #f59e0b">
+              <div class="stat-icon-wrap" style="--accent: #f59e0b">
+                <i class="bi bi-people"></i>
+              </div>
+              <div>
+                <div class="stat-val" id="dash-students">0</div>
+                <div class="stat-lbl">Students</div>
+                <div class="stat-delta positive">
+                  <i class="bi bi-arrow-up-short"></i>+12 this week
+                </div>
+              </div>
+            </div>
+            <div class="stat-card" style="--accent: #ef4444">
+              <div class="stat-icon-wrap" style="--accent: #ef4444">
+                <i class="bi bi-graph-up-arrow"></i>
+              </div>
+              <div>
+                <div class="stat-val">12</div>
+                <div class="stat-lbl">Enrollments</div>
+                <div class="stat-delta negative">
+                  <i class="bi bi-arrow-down-short"></i>-2 this week
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="card">
+              <div class="card-head">
+                <span class="card-title">Recent Courses</span>
+                <a class="card-link" onclick="navigate('courses')"
+                  >View all →</a
+                >
+              </div>
+              <div class="card-body" id="dash-course-list">
+                <p class="empty-small">No courses yet</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <span class="card-title">Enrollment by Category</span>
+              </div>
+              <div class="card-body">
+                <div class="bar-chart">
+                  <div class="bar-row">
+                    <span class="bar-lbl">Programming</span>
+                    <div class="bar-track">
+                      <div
+                        class="bar-fill"
+                        style="width: 72%; background: #22c55e"
+                      ></div>
+                    </div>
+                    <span class="bar-val">72%</span>
+                  </div>
+                  <div class="bar-row">
+                    <span class="bar-lbl">Design</span>
+                    <div class="bar-track">
+                      <div
+                        class="bar-fill"
+                        style="width: 55%; background: #6366f1"
+                      ></div>
+                    </div>
+                    <span class="bar-val">55%</span>
+                  </div>
+                  <div class="bar-row">
+                    <span class="bar-lbl">Data Science</span>
+                    <div class="bar-track">
+                      <div
+                        class="bar-fill"
+                        style="width: 40%; background: #f59e0b"
+                      ></div>
+                    </div>
+                    <span class="bar-val">40%</span>
+                  </div>
+                  <div class="bar-row">
+                    <span class="bar-lbl">Mobile</span>
+                    <div class="bar-track">
+                      <div
+                        class="bar-fill"
+                        style="width: 28%; background: #ef4444"
+                      ></div>
+                    </div>
+                    <span class="bar-val">28%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <span class="card-title">Recent Activity</span>
+                <span class="live-badge"
+                  ><span class="live-dot"></span>Live</span
+                >
+              </div>
+              <div class="card-body">
+                <ul class="activity-list">
+                  <li>
+                    <span class="a-dot" style="background: #22c55e"></span>
+                    <div>
+                      <div class="a-text">
+                        Course <b>React Advanced</b> added
+                      </div>
+                      <div class="a-time">2 min ago</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="a-dot" style="background: #6366f1"></span>
+                    <div>
+                      <div class="a-text">
+                        <b>Karim Ahmed</b> enrolled in Web Dev
+                      </div>
+                      <div class="a-time">18 min ago</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="a-dot" style="background: #f59e0b"></span>
+                    <div>
+                      <div class="a-text">New trainer <b>Li Wei</b> joined</div>
+                      <div class="a-time">1 hr ago</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="a-dot" style="background: #ef4444"></span>
+                    <div>
+                      <div class="a-text">
+                        <b>Data Science</b> course updated
+                      </div>
+                      <div class="a-time">3 hr ago</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="a-dot" style="background: #22c55e"></span>
+                    <div>
+                      <div class="a-text">
+                        <b>Ayesha Khan</b> completed UI/UX
+                      </div>
+                      <div class="a-time">Yesterday</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <span class="card-title">Quick Actions</span>
+              </div>
+              <div class="card-body">
+                <div class="quick-grid">
+                  <button
+                    class="quick-btn"
+                    onclick="
+                      navigate('courses');
+                      setTimeout(openCourseModal, 300);
+                    "
+                  >
+                    <i class="bi bi-plus-circle"></i><span>Add Course</span>
+                  </button>
+                  <button
+                    class="quick-btn"
+                    onclick="
+                      navigate('trainers');
+                      setTimeout(openTrainerModal, 300);
+                    "
+                  >
+                    <i class="bi bi-person-plus"></i><span>Add Trainer</span>
+                  </button>
+                  <button
+                    class="quick-btn"
+                    onclick="
+                      navigate('students');
+                      setTimeout(openStudentModal, 300);
+                    "
+                  >
+                    <i class="bi bi-person-badge"></i><span>Add Student</span>
+                  </button>
+                  <button class="quick-btn" onclick="openAIAssistant()">
+                    <i class="bi bi-stars"></i><span>AI Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-courses">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Courses</h1>
+              <p class="page-sub" id="courses-sub">
+                Manage your course catalog
+              </p>
+            </div>
+            <div class="header-actions">
+              <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input
+                  type="text"
+                  id="courseSearch"
+                  placeholder="Search courses…"
+                  oninput="filterCourses()"
+                />
+              </div>
+              <button class="btn-primary" onclick="openCourseModal()">
+                <i class="bi bi-plus-lg"></i> Add Course
+              </button>
+            </div>
+          </div>
+          <div class="courses-grid" id="coursesGrid"></div>
+          <div class="empty-state" id="coursesEmpty" style="display: none">
+            <i class="bi bi-journal-x"></i>
+            <p>No courses found</p>
+          </div>
+        </section>
+
+        <section class="page" id="page-trainers">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Trainers</h1>
+              <p class="page-sub" id="trainers-sub">
+                Manage your instructor team
+              </p>
+            </div>
+            <div class="header-actions">
+              <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input
+                  type="text"
+                  id="trainerSearch"
+                  placeholder="Search trainers…"
+                  oninput="filterTrainers()"
+                />
+              </div>
+              <button class="btn-primary" onclick="openTrainerModal()">
+                <i class="bi bi-plus-lg"></i> Add Trainer
+              </button>
+            </div>
+          </div>
+          <div class="trainers-grid" id="trainersGrid"></div>
+          <div class="empty-state" id="trainersEmpty" style="display: none">
+            <i class="bi bi-person-x"></i>
+            <p>No trainers found</p>
+          </div>
+        </section>
+
+        <section class="page" id="page-students">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Students</h1>
+              <p class="page-sub" id="students-sub">Manage enrolled students</p>
+            </div>
+            <div class="header-actions">
+              <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input
+                  type="text"
+                  id="studentSearch"
+                  placeholder="Search students…"
+                  oninput="filterStudents()"
+                />
+              </div>
+              <button class="btn-ai" onclick="openStudentAI()">
+                <i class="bi bi-stars"></i> AI Analyze
+              </button>
+              <button class="btn-primary" onclick="openStudentModal()">
+                <i class="bi bi-plus-lg"></i> Add Student
+              </button>
+            </div>
+          </div>
+          <div class="student-stats-row">
+            <div class="sts-card">
+              <span class="sts-val" id="st-total">0</span
+              ><span class="sts-lbl">Total</span>
+            </div>
+            <div class="sts-card">
+              <span class="sts-val" style="color: #22c55e" id="st-active"
+                >0</span
+              ><span class="sts-lbl">Active</span>
+            </div>
+            <div class="sts-card">
+              <span class="sts-val" style="color: #6366f1" id="st-completed"
+                >0</span
+              ><span class="sts-lbl">Completed</span>
+            </div>
+            <div class="sts-card">
+              <span class="sts-val" style="color: #ef4444" id="st-dropped"
+                >0</span
+              ><span class="sts-lbl">Dropped</span>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Course</th>
+                    <th>Trainer</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="studentsBody"></tbody>
+              </table>
+            </div>
+            <div class="table-foot">
+              <span id="stu-page-info">Showing 0 entries</span>
+              <div id="stu-pagination"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="overlay" id="courseOverlay">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3 id="courseMTitle">Add Course</h3>
+          <button class="close-btn" onclick="closeCourseModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="fg">
+              <label>Course Name <em>*</em></label>
+              <input id="c-name" placeholder="Web Development Bootcamp" />
+            </div>
+            <div class="fg">
+              <label>Category</label>
+              <input id="c-cat" placeholder="e.g. Programming" />
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="fg">
+              <label>Duration</label>
+              <input id="c-dur" placeholder="e.g. 3 Months" />
+            </div>
+            <div class="fg">
+              <label>Price ($)</label>
+              <input id="c-price" placeholder="e.g. 120" />
+            </div>
+          </div>
+          <div class="fg">
+            <div class="lbl-row">
+              <label>Description</label>
+              <button class="ai-mini-btn" onclick="generateCourseAI()">
+                <i class="bi bi-stars"></i> AI Generate
+              </button>
+            </div>
+            <textarea
+              id="c-desc"
+              rows="3"
+              placeholder="Course description…"
+            ></textarea>
+            <div class="ai-st" id="c-ai-st"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="fg">
+              <label>Skills</label>
+              <input id="c-skills" placeholder="HTML, CSS, JS" />
+            </div>
+            <div class="fg">
+              <label>Requirements</label>
+              <input id="c-req" placeholder="Beginner friendly" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Course PDF (optional)</label>
+            <input
+              type="file"
+              id="c-pdf"
+              accept=".pdf"
+              onchange="handlePDF(event)"
+            />
+            <div id="c-pdf-prev" class="file-prev" style="display: none"></div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn-outline" onclick="closeCourseModal()">
+            Cancel
+          </button>
+          <button class="btn-primary" onclick="saveCourse()">
+            Save Course
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="trainerOverlay">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3 id="trainerMTitle">Add Trainer</h3>
+          <button class="close-btn" onclick="closeTrainerModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="fg">
+              <label>Full Name <em>*</em></label>
+              <input id="t-name" placeholder="John Smith" />
+            </div>
+            <div class="fg">
+              <label>Expertise</label>
+              <input id="t-exp" placeholder="Web Development" />
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="fg">
+              <label>Email</label>
+              <input
+                id="t-email"
+                type="email"
+                placeholder="trainer@email.com"
+              />
+            </div>
+            <div class="fg">
+              <label>Experience</label>
+              <input id="t-experience" placeholder="5 Years" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Photo URL</label>
+            <input id="t-img" placeholder="https://…" oninput="previewTImg()" />
+            <img
+              id="t-img-prev"
+              src=""
+              style="
+                display: none;
+                width: 56px;
+                height: 56px;
+                border-radius: 10px;
+                object-fit: cover;
+                margin-top: 8px;
+                border: 2px solid var(--border);
+              "
+            />
+          </div>
+          <div class="fg">
+            <div class="lbl-row">
+              <label>Bio</label>
+              <button class="ai-mini-btn" onclick="generateTrainerBio()">
+                <i class="bi bi-stars"></i> AI Bio
+              </button>
+            </div>
+            <textarea id="t-bio" rows="3" placeholder="Trainer bio…"></textarea>
+            <div class="ai-st" id="t-ai-st"></div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn-outline" onclick="closeTrainerModal()">
+            Cancel
+          </button>
+          <button class="btn-primary" onclick="saveTrainer()">
+            Save Trainer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="studentOverlay">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3 id="studentMTitle">Add Student</h3>
+          <button class="close-btn" onclick="closeStudentModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="fg">
+              <label>Full Name <em>*</em></label>
+              <input id="s-name" placeholder="Rahim Uddin" />
+            </div>
+            <div class="fg">
+              <label>Email</label>
+              <input
+                id="s-email"
+                type="email"
+                placeholder="student@email.com"
+              />
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="fg">
+              <label>Course</label>
+              <input id="s-course" placeholder="Web Development" />
+            </div>
+            <div class="fg">
+              <label>Trainer</label>
+              <input id="s-trainer" placeholder="John Smith" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Status</label>
+            <select id="s-status">
+              <option value="Active">Active</option>
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+              <option value="Dropped">Dropped</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn-outline" onclick="closeStudentModal()">
+            Cancel
+          </button>
+          <button class="btn-primary" onclick="saveStudent()">
+            Save Student
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="aiOverlay">
+      <div class="modal-box modal-wide">
+        <div class="modal-head">
+          <h3>
+            <i class="bi bi-stars" style="color: var(--green)"></i> AI Assistant
+          </h3>
+          <button class="close-btn" onclick="closeAIModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body" style="padding-bottom: 0">
+          <div class="chat-area" id="chatArea">
+            <div class="chat-welcome">
+              <div class="chat-icon"><i class="bi bi-stars"></i></div>
+              <div class="chat-title">EduCore AI Assistant</div>
+              <div class="chat-sub">
+                Ask anything about your platform — courses, students, insights,
+                recommendations.
+              </div>
+              <div class="chat-chips">
+                <button
+                  onclick="
+                    sendAI('Give me a full platform performance briefing')
+                  "
+                >
+                  📊 Platform Briefing
+                </button>
+                <button
+                  onclick="
+                    sendAI('What courses should I add to increase enrollment?')
+                  "
+                >
+                  💡 Course Ideas
+                </button>
+                <button
+                  onclick="
+                    sendAI('Analyze dropout rate and give recommendations')
+                  "
+                >
+                  🎯 Dropout Analysis
+                </button>
+                <button
+                  onclick="
+                    sendAI(
+                      'Write a compelling marketing description for Web Development course',
+                    )
+                  "
+                >
+                  ✍️ Course Copy
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <input
+              id="aiInput"
+              type="text"
+              placeholder="Ask anything about EduCore…"
+              onkeydown="if (event.key === 'Enter') sendAI();"
+            />
+            <button class="btn-primary" onclick="sendAI()">
+              <i class="bi bi-send"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="stuAiOverlay">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3>
+            <i class="bi bi-stars" style="color: var(--green)"></i> Student
+            Analysis
+          </h3>
+          <button class="close-btn" onclick="closeStudentAI()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="color: var(--muted); font-size: 14px; margin-bottom: 16px">
+            Get AI-powered insights on your student cohort — retention,
+            engagement, and growth recommendations.
+          </p>
+          <button
+            class="btn-primary"
+            style="width: 100%; margin-bottom: 16px; justify-content: center"
+            onclick="runStudentAI()"
+          >
+            <i class="bi bi-stars"></i> Generate Analysis
+          </button>
+          <div class="ai-result" id="stuAiResult">
+            Analysis will appear here…
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn-outline" onclick="closeStudentAI()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastWrap"></div>
+
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
